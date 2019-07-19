@@ -1,5 +1,6 @@
 const db = require('../data/db');
 
+
 module.exports = {
 	get: function() {
 		return db('projects');
@@ -13,7 +14,9 @@ module.exports = {
 
 	getWithActions: async function(id) {
 		const project = await this.getById(id);
-		project.actions = this.getProjectActions(id);
+		project.actions =  await this.getProjectActions(id);
+		console.log(project)
+		return project
 	},
 
 	insert: function(project) {

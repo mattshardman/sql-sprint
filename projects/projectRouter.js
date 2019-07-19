@@ -24,7 +24,8 @@ router.get('/', async (req, res) => {
 router.get('/:id', validateProjectId, async (req, res) => {
 	const id = req.params.id;
 	try {
-		const project = await Project.getById(id);
+    const project = await Project.getWithActions(id);
+   
 		res.status(200).json(project);
 	} catch (error) {
 		res
