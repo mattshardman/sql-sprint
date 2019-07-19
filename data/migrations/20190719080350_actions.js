@@ -1,5 +1,5 @@
 exports.up = function(knex) {
-	return knex.schema.createTable('actions', function(actions) {
+	return knex.schema.createTable('actions', actions => {
 		actions.increments();
 		actions
 			.integer('project_id')
