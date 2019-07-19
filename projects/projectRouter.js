@@ -1,11 +1,6 @@
 const router = require('express').Router();
 const Project = require('../projects/projectModel');
 const Action = require('../actions/actionModel');
-const {
-	validateProject,
-	validateProjectId,
-	validateAction
-} = require('../middleware/projectMiddleware');
 
 router.post('/', validateProject, async (req, res) => {
 	const { name, description } = req.body;
@@ -29,7 +24,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', validateProjectId, async (req, res) => {
 	const id = req.params.id;
 	try {
-		const project = await Project.getWithActions(id);
+		const project = await Project.getById(id);
 		res.status(200).json(project);
 	} catch (error) {
 		res
@@ -81,3 +76,43 @@ catch(error) {
 }
 	}
 );
+
+
+//Middleware
+async function validateProjectId(req, res, next) {
+	const id = req.params.id;
+
+	const project = await Project.get(id);
+
+	if (project) {
+		next();
+	} else {
+		res.status(400).json({ message: 'Invalid project ID' });
+	}
+}
+
+function validateProject(req, res, next) {
+	if (Object.keys(req.body) == 0) {
+		res.status(400).json({ message: 'Missing project data' });
+	} else if (!req.body.name || !req.body.description) {
+		res.status(400).json({
+			message: 'Please provide a name and description for your project.'
+		});
+	} else {
+		next();
+	}
+}
+
+function validateAction(req, res, next) {
+	if (Object.keys(req.body) == 0) {
+		res.status(400).json({ message: 'Missing action data' });
+	} else if (!req.body.description || !req.body.notes) {
+		res.status(400).json({
+			message: 'Please provide a description and note for your action.'
+		});
+	} else {
+		next();
+	}
+}
+
+module.exports = router;

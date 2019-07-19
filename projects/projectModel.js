@@ -6,7 +6,9 @@ module.exports = {
 	},
 
 	getById: function(id) {
-		return db('projects').where({ id });
+		return db('projects')
+			.where('id', id)
+			.then(ids => ids[0]);
 	},
 
 	getWithActions: async function(id) {
